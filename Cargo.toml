@@ -8,3 +8,4 @@ pest = "2.0"
 pest_derive = "2.0"
 clap =  { version = "4.0", features = ["derive"] }
 diff = "0.1"
+string-builder = "0.2"
