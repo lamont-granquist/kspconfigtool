@@ -1,0 +1,16 @@
+document = { SOI ~ NEWLINE* ~ statement* ~ EOI }
+
+statement = _{ assignment | node ~ NEWLINE* }
+
+node = { identifier ~ NEWLINE* ~ "{" ~ NEWLINE* ~ statement* ~ NEWLINE* ~ "}" }
+
+assignment = { identifier ~ "=" ~ value ~ NEWLINE* }
+
+identifier = ${ (!( "=" | "{" | "}" | WHITESPACE | NEWLINE ) ~ ANY)+ }
+
+value = ${ (!NEWLINE ~ ANY)* }
+
+COMMENT = _{ "//" ~ (!NEWLINE ~ ANY)* }
+
+WHITESPACE = _{ "\t" | SPACE_SEPARATOR }
+
