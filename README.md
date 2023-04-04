@@ -4,6 +4,15 @@ This is a rust "script" for removing parts/modules/resources from KSP1 craft fil
 
 Its primary purpose is to clean up invalid stuff from 'stock' crafts for use in RSS/RO/RP-1.
 
+### Installation
+
+- Install rust via https://www.rust-lang.org/tools/install
+- Install kspconfigtool:
+
+```
+cargo install kspconfigtool
+```
+
 ### Usage
 
 For example:
