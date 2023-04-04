@@ -1,7 +1,19 @@
 [package]
 name = "kspconfigtool"
 version = "0.1.0"
+authors = ["Lamont Granquist <lamont.granquist@pm.me>"]
+description = """
+KSP1 ConfigNode parser and block removal tool
+"""
+documentation = "https://github.com/lamont-granquist/kspconfigtool"
+homepage = "https://github.com/lamont-granquist/kspconfigtool"
+repository = "https://github.com/lamont-granquist/kspconfigtool"
+keywords = ["kerbal", "confignode"]
+categories = ["command-line-utilities", "text-processing"]
+license = "Unlicense OR MIT"
 edition = "2021"
+rust-version = "1.68.2"
+
 
 [dependencies]
 pest = "2.0"
