@@ -32,7 +32,9 @@ kspconfigtool clean Ships/VAB/*.craft
 ### Futures
 
 - Maybe extend the parser to read all the broken config files that the KSP parser reads.
+- Maybe flags for --dry-run, converting tabs to spaces, and selecting dos-vs-unix.
 - Maybe add a proper rust serde serializer/deserializer.
+- Has zero tests, needs tests.
 
 ### Out Of Scope
 
