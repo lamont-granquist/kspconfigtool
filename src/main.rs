@@ -53,11 +53,22 @@ fn parse_string(string: &str) -> Result<Document, Error<Rule>> {
     Ok(Document { statements: parse_statements(config.into_inner()) })
 }
 
+fn strip_numerical_suffix(s: &str) -> String {
+    if let Some(idx) = s.rfind('_') {
+        if let Some(suffix) = s.get(idx + 1..) {
+            if suffix.chars().all(|c| c.is_ascii_digit()) {
+                return s[..idx].to_string();
+            }
+        }
+    }
+    s.to_string()
+}
+
 fn get_name_from_statements(node_id: &str, statements: &Vec<Statement>) -> Option<String> {
     for statement in statements {
         if let Statement::Assignment(identifier, value) = statement {
             if node_id == "PART" && identifier == "part" {
-               return Some(value.clone());
+               return Some(strip_numerical_suffix(value));
             }
             if node_id == "RESOURCE" && identifier == "name" {
                return Some(value.clone());
@@ -105,23 +116,39 @@ fn append_to_path(path: &Path, ext: &str) -> PathBuf {
     new_path.into()
 }
 
-fn replace_contents(string: &str, path: &PathBuf) -> PathBuf {
-    let newpath = append_to_path(path, ".new");
-
-    let mut newfile = File::create(&newpath).unwrap();
-
-    newfile.write_all(string.as_bytes()).unwrap();
-
-    newpath.clone()
+fn backup_filename(path: &Path) -> PathBuf {
+    for n in 1..100 {
+        let ext = format!(".orig{}", n);
+        let backup_filename = append_to_path(path, &ext);
+        if !backup_filename.try_exists().unwrap() == true {
+            return backup_filename;
+        }
+    }
+    panic!("could not find a viable backup filename");
 }
 
-fn windows_lineending(contents: &str) -> bool {
+fn replace_contents(string: &str, path: &Path) -> PathBuf {
+    let new_path = append_to_path(path, ".new");
+
+    let mut new_file = File::create(&new_path).unwrap();
+
+    new_file.write_all(string.as_bytes()).unwrap();
+
+    let backup_filename = backup_filename(&path);
+
+    fs::rename(&path, &backup_filename).unwrap();
+
+    fs::rename(&new_path, &path).unwrap();
+
+    backup_filename
+}
+
+fn has_windows_line_ending(contents: &str) -> bool {
     for c in contents.chars() {
-        if c == '\r'{
-            return true;
-        }
-        if c == '\n' {
-            return false;
+        match c {
+            '\r' => return true,
+            '\n' => return false,
+            _ => {}
         }
     }
     false
@@ -142,7 +169,7 @@ fn main() {
             Action::Clean => { document.clone() },
         };
 
-        let edited_string = if windows_lineending(&contents) {
+        let edited_string = if has_windows_line_ending(&contents) {
             edited.to_windows()
         } else {
             edited.to_string()
@@ -156,8 +183,6 @@ fn main() {
         let backup_file = replace_contents(&edited_string, &file);
 
         println!("edited {}\n  => backed up to {}\n", file.display(), backup_file.display());
-
-        println!("count = {}", diff::lines(&contents, &edited_string).len());
 
         for diff in diff::lines(&contents, &edited_string) {
             match diff {
