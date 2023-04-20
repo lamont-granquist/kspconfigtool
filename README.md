@@ -19,7 +19,7 @@ For example:
 
 ```
 kspconfigtool remove module TweakScale Ships/VAB/*.craft
-kspconfigtool remove remove module ModuleColliderHelper Ships/VAB/*.craft
+kspconfigtool remove module ModuleColliderHelper Ships/VAB/*.craft
 kspconfigtool remove resource LiquidFuel Ships/VAB/*.craft
 kspconfigtool remove resource Oxidizer Ships/VAB/*.craft
 kspconfigtool remove part sensorAccelerometer Ships/VAB/*.craft
